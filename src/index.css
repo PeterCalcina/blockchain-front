@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+:root {
+  --navy: #4338ca;
+  --navy-50: #eef2ff;
+  --navy-100: #e0e7ff;
+  --navy-200: #c7d2fe;
+  --navy-300: #a5b4fc;
+  --navy-400: #818cf8;
+  --navy-500: #6366f1;
+  --navy-600: #4f46e5;
+  --navy-700: #4338ca;
+  --navy-800: #3730a3;
+  --navy-900: #312e81;
+}
