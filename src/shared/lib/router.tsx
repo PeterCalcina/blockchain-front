@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 
 // Pages
 import { LoginPage } from "@/pages/auth/LoginPage";
+import SignDocument from "@/pages/dashboard/SignDocument";
 
 // Stores and Layouts
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -39,11 +40,21 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <DashboardLayout />,
+        children: [
+          {
+            path: "sign-document",
+            element: <SignDocument />,
+          },
+          {
+            path: "reports",
+            // element: <Reports />,
+          },
+        ],
       },
     ],
   },
   {
     path: "*",
-    element: <Navigate to="/dashboard" />,
+    element: <Navigate to="/dashboard/sign-document" />,
   },
 ]);
