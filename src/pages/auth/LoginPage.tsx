@@ -1,5 +1,6 @@
 import { Button, Card, Input } from "@/shared/components/ui";
 import { Label } from "@/shared/components/ui/label";
+import { useAuthStore } from "@/stores/authStore";
 import { Shield } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setAuth} = useAuthStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +20,11 @@ export function LoginPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (username === "admin" && password === "123") {
-      localStorage.setItem("isAuthenticated", "true");
+      setAuth({
+        id: "1",
+        name: "Admin",
+        email: "admin@example.com",
+      }, "1");
       navigate("/dashboard");
     } else {
     }
