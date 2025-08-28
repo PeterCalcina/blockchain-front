@@ -3,7 +3,7 @@ import { Label } from "@/shared/components/ui/label";
 import { useAuthStore } from "@/stores/authStore";
 import { Shield } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export function LoginPage() {
   const [username, setUsername] = useState("");
@@ -25,8 +25,10 @@ export function LoginPage() {
         name: "Admin",
         email: "admin@example.com",
       }, "1");
+      localStorage.setItem("isAuthenticated", "true");
       navigate("/dashboard");
     } else {
+      alert("Usuario o contraseña incorrectos");
     }
 
     setIsLoading(false);
@@ -91,6 +93,18 @@ export function LoginPage() {
                 "Iniciar Sesión"
               )}
             </Button>
+
+            <div className="text-center pt-4">
+              <p className="text-gray-600">
+                ¿No tienes cuenta?{" "}
+                <Link 
+                  to="/register" 
+                  className="text-teal-600 hover:text-teal-700 font-medium underline"
+                >
+                  Crea una ahora
+                </Link>
+              </p>
+            </div>
           </form>
         </Card.Content>
       </Card.Root>

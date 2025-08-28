@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 
 // Pages
 import { LoginPage } from "@/pages/auth/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
 import SignDocument from "@/pages/dashboard/SignDocument";
 
 // Stores and Layouts
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
           {
             path: "/login",
             element: <LoginPage />,
+          },
+          {
+            path: "/register",
+            element: <RegisterPage />,
           }
         ],
       },
