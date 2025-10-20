@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { queryClient } from '@/api/client/queryClient'
-import type { User } from '../shared/types/User'
+import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null

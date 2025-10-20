@@ -3,7 +3,9 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 // Pages
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 import SignDocument from "@/pages/dashboard/SignDocument";
+import HistoryPage from "@/pages/dashboard/HistoryPage";
 
 // Stores and Layouts
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -32,8 +34,8 @@ export const router = createBrowserRouter([
             element: <LoginPage />,
           },
           {
-            path: "/register",
-            element: <RegisterPage />,
+            path: "/forgot-password",
+            element: <ForgotPasswordPage />,
           }
         ],
       },
@@ -49,6 +51,14 @@ export const router = createBrowserRouter([
           {
             path: "sign-document",
             element: <SignDocument />,
+          },
+          {
+            path: "register",
+            element: <RegisterPage />,
+          },
+          {
+            path: "history",
+            element: <HistoryPage />,
           },
           {
             path: "reports",

@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
-import { Response } from "@/shared/types/response";
+import type { Response } from "@/shared/types/Response";
 
 type SearchParams = Record<string, string | number | boolean | undefined>;
 
@@ -49,8 +49,6 @@ export const useAuthFetcher = () => {
 
       if (errorResponse?.message) {
         errorMessage = errorResponse.message;
-      } else if (typeof errorResponse?.error === "string") {
-        errorMessage = errorResponse.error;
       } else if (res.statusText) {
         errorMessage = res.statusText;
       }

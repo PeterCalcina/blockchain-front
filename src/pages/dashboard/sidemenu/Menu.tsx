@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FileUp, BarChart3, LogOut, Shield } from "lucide-react";
+import { FileUp, BarChart3, LogOut, Shield, UserPlus, History } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -13,12 +13,23 @@ import {
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
 import { Button } from "@/shared/components/ui/button";
+import { useAuthStore } from "@/stores/authStore";
 
 const menuItems = [
   {
     title: "Firmar Documento",
     url: "/dashboard/sign-document",
     icon: FileUp,
+  },
+  {
+    title: "Crear Usuario",
+    url: "/dashboard/register",
+    icon: UserPlus,
+  },
+  {
+    title: "Historial",
+    url: "/dashboard/history",
+    icon: History,
   },
   {
     title: "Reportes",
@@ -30,10 +41,11 @@ const menuItems = [
 export function AppSidebar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { logout } = useAuthStore();
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
-    navigate("/");
+    logout();
+    navigate("/login");
   };
 
   return (

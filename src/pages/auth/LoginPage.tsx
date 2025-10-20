@@ -1,37 +1,33 @@
 import { Button, Card, Input } from "@/shared/components/ui";
 import { Label } from "@/shared/components/ui/label";
-import { useAuthStore } from "@/stores/authStore";
+import { useLogin } from "@/api/hooks/useLogin";
 import { Shield } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 export function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setAuth} = useAuthStore();
+  const location = useLocation();
+  const loginMutation = useLogin();
+
+  const from = location.state?.from?.pathname || "/";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Simular delay de autenticación
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    if (username === "admin" && password === "123") {
-      setAuth({
-        id: "1",
-        name: "Admin",
-        email: "admin@example.com",
-      }, "1");
-      localStorage.setItem("isAuthenticated", "true");
-      navigate("/dashboard");
-    } else {
-      alert("Usuario o contraseña incorrectos");
+    if (!username || !password) {
+      return;
     }
 
-    setIsLoading(false);
+    try {
+      await loginMutation.mutateAsync({ username, password });
+      navigate(from, { replace: true });
+    } catch (error) {
+      // El error ya se maneja en el hook
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -82,9 +78,9 @@ export function LoginPage() {
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-              disabled={isLoading}
+              disabled={loginMutation.isPending}
             >
-              {isLoading ? (
+              {loginMutation.isPending ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Iniciando sesión...
@@ -96,12 +92,11 @@ export function LoginPage() {
 
             <div className="text-center pt-4">
               <p className="text-gray-600">
-                ¿No tienes cuenta?{" "}
                 <Link 
-                  to="/register" 
+                  to="/forgot-password" 
                   className="text-teal-600 hover:text-teal-700 font-medium underline"
                 >
-                  Crea una ahora
+                  ¿Olvidaste tu contraseña?
                 </Link>
               </p>
             </div>
