@@ -22,13 +22,17 @@ export function RegisterPage() {
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const createUser = useCreateUser();
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { addToast } = useToastStore();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+
+    // Validar que las contraseñas coincidan
+    if (formData.password !== confirmPassword) {
+      addToast("error", "Las contraseñas no coinciden");
+      return;
+    }
 
     try {
       const validateData = CreateUserSchema.parse(formData);
@@ -44,9 +48,6 @@ export function RegisterPage() {
       navigate("/dashboard/sign-document");
     } catch (error) {
       console.error("Error en el registro:", error);
-      addToast("error", "Error al registrar el usuario");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -242,9 +243,9 @@ export function RegisterPage() {
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-              disabled={isLoading}
+              disabled={createUser.isPending}
             >
-              {isLoading ? (
+              {createUser.isPending ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Creando cuenta...

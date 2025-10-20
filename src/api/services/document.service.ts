@@ -12,11 +12,21 @@ export const createDocumentService = (fetcher: ReturnType<typeof useAuthFetcher>
         method: 'POST',
         body: formData,
       });
+    },
+
+    validate: (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      return fetcher(API_ENDPOINTS.documents.validateDocument, {
+        method: 'POST',
+        body: formData,
+      });
     }
 });
 
 export const getDocumentHistoryService = (fetcher: ReturnType<typeof useAuthFetcher>) => ({
     getHistory: () => fetcher<GetDocumentHistorySchemaDto[]>(API_ENDPOINTS.documents.getHistory, {
       method: 'GET',
-    }).then(response => response.data),
+    }).then(response => response.content),
 });

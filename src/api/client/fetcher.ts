@@ -12,7 +12,7 @@ export const useAuthFetcher = () => {
     url: string,
     options: FetcherOptions = {}
   ): Promise<Response<T>> => {
-    const currentToken = useAuthStore.getState().token;
+    const currentToken = useAuthStore.getState().accessToken;
 
     const method = options.method?.toUpperCase() || 'GET';
     let fullUrl = url;
@@ -47,8 +47,8 @@ export const useAuthFetcher = () => {
 
       let errorMessage = "Error desconocido al obtener los datos.";
 
-      if (errorResponse?.message) {
-        errorMessage = errorResponse.message;
+      if (errorResponse?.content as string) {
+        errorMessage = errorResponse?.content as string;
       } else if (res.statusText) {
         errorMessage = res.statusText;
       }
@@ -56,7 +56,7 @@ export const useAuthFetcher = () => {
       if (res.status === 401) {
         useAuthStore.getState().logout();
         errorMessage =
-          errorResponse?.message || "Sesión expirada, inicia sesión otra vez.";
+          errorResponse?.content as string || "Sesión expirada, inicia sesión otra vez.";
       }
 
       throw new Error(errorMessage);
@@ -64,7 +64,7 @@ export const useAuthFetcher = () => {
 
     const jsonResponse: Response<T> = await res.json();
 
-    if (jsonResponse.data === undefined && res.status !== 204) {
+    if (jsonResponse.content === undefined && res.status !== 204) {
       throw new Error("La respuesta exitosa no contiene datos esperados.");
     }
 

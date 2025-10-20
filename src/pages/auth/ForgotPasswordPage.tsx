@@ -1,25 +1,29 @@
 import { Button, Card, Input } from "@/shared/components/ui";
 import { Label } from "@/shared/components/ui/label";
+import { useForgotPassword } from "@/api/hooks/useForgotPassword";
 import { KeyRound } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
+  const forgotPasswordMutation = useForgotPassword();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Simular delay de envío
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!email) {
+      return;
+    }
 
-    // Simular envío exitoso
-    setIsSubmitted(true);
-    setIsLoading(false);
+    try {
+      await forgotPasswordMutation.mutateAsync(email);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error sending forgot password:", error);
+    }
   };
 
   if (isSubmitted) {
@@ -101,9 +105,9 @@ export function ForgotPasswordPage() {
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-              disabled={isLoading}
+              disabled={forgotPasswordMutation.isPending}
             >
-              {isLoading ? (
+              {forgotPasswordMutation.isPending ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Enviando...

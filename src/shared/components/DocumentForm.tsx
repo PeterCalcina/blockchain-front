@@ -8,9 +8,7 @@ import {
   X,
   FileText,
   Sparkles,
-  Shield,
   AlertCircle,
-  CheckCircle,
 } from "lucide-react";
 
 interface DocumentFormProps {

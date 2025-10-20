@@ -1,19 +1,15 @@
 import { DocumentForm } from "@/shared/components/DocumentForm";
+import { useValidateDocument } from "@/api/hooks/useValidateDocument";
 import { CheckCircle } from "lucide-react";
-import { useToastStore } from "@/stores/toastStore";
 
 export default function SignValidation() {
-  const { addToast } = useToastStore();
+  const validateDocument = useValidateDocument();
 
   const handleDocumentValidation = async (file: File) => {
     try {
-      // Simular validación del documento
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      addToast("success", `Documento "${file.name}" validado exitosamente`);
+      await validateDocument.mutateAsync(file);
     } catch (error) {
       console.error("Error validating document:", error);
-      addToast("error", "Error al validar el documento");
     }
   };
 
@@ -24,6 +20,7 @@ export default function SignValidation() {
       buttonText="Validar Documento"
       buttonIcon={CheckCircle}
       onDocumentSubmit={handleDocumentValidation}
+      isLoading={validateDocument.isPending}
       showDocNameInput={false}
     />
   );

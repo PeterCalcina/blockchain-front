@@ -5,9 +5,10 @@ import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
-  token: string | null
+  accessToken: string | null
+  refreshToken: string | null
   isAuthenticated: boolean
-  setAuth: (user: User, token: string) => void
+  setAuth: (user: User, accessToken: string, refreshToken?: string) => void
   logout: () => void
 }
 
@@ -15,11 +16,17 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
+      accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
-      setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
+      setAuth: (user, accessToken, refreshToken) => set({ 
+        user, 
+        accessToken, 
+        refreshToken: refreshToken || null, 
+        isAuthenticated: true 
+      }),
       logout: () => {
-        set({ user: null, token: null, isAuthenticated: false });
+        set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false });
         localStorage.removeItem("auth");
         queryClient.clear();
       },
@@ -29,7 +36,8 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }
