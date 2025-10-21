@@ -8,7 +8,12 @@ export const useGetHistory = () => {
 
   return useQuery({
     queryKey: ["documentHistory"],
-    queryFn: getHistory,
+    queryFn: async () => {
+      console.log("📚 [useGetHistory] Solicitando historial de documentos...");
+      const response = await getHistory();
+      console.log("📚 [useGetHistory] Respuesta completa del backend:", response);
+      return response;
+    },
   });
 };
 

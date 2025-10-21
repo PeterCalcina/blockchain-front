@@ -18,5 +18,5 @@ export const listUsersService = (
   list: () =>
     fetcher<GetUserSchemaDto[]>(API_ENDPOINTS.auth.listUsers, {
       method: "GET",
-    }).then(response => response.data),
+    }).then(response => response.content),
 });

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
 export function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,12 +17,12 @@ export function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!username || !password) {
+    if (!email || !password) {
       return;
     }
 
     try {
-      await loginMutation.mutateAsync({ username, password });
+      await loginMutation.mutateAsync({ email, password });
       navigate(from, { replace: true });
     } catch (error) {
       // El error ya se maneja en el hook
@@ -51,11 +51,11 @@ export function LoginPage() {
                 Usuario
               </Label>
               <Input
-                id="username"
+                id="email"
                 type="text"
-                placeholder="Ingresa tu usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Ingresa tu correo electrónico"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="h-12 border-gray-200 focus:border-teal-500 focus:ring-teal-500/20"
                 required
               />

@@ -11,3 +11,8 @@ export interface DocumentHistory {
   blockchain_hash?: string;
   signed_by: string;
 }
+
+export interface DocumentSignResponse {
+  message: string;
+  data: any;
+}

@@ -13,6 +13,13 @@ export const useAuthFetcher = () => {
     options: FetcherOptions = {}
   ): Promise<Response<T>> => {
     const currentToken = useAuthStore.getState().accessToken;
+    
+    console.log("🌐 [Fetcher] Iniciando petición:", {
+      url,
+      method: options.method || 'GET',
+      hasToken: !!currentToken,
+      headers: options.headers
+    });
 
     const method = options.method?.toUpperCase() || 'GET';
     let fullUrl = url;
@@ -40,10 +47,23 @@ export const useAuthFetcher = () => {
       body: requestBody,
     });
 
+    console.log("🌐 [Fetcher] Respuesta recibida:", {
+      status: res.status,
+      statusText: res.statusText,
+      ok: res.ok,
+      headers: Object.fromEntries(res.headers.entries())
+    });
+
     if (!res.ok) {
       const errorResponse: Response<T> | null = await res
         .json()
         .catch(() => null);
+
+      console.error("🌐 [Fetcher] Error en la respuesta:", {
+        status: res.status,
+        statusText: res.statusText,
+        errorResponse
+      });
 
       let errorMessage = "Error desconocido al obtener los datos.";
 
@@ -62,13 +82,27 @@ export const useAuthFetcher = () => {
       throw new Error(errorMessage);
     }
 
-    const jsonResponse: Response<T> = await res.json();
+    const jsonResponse: any = await res.json();
 
-    if (jsonResponse.content === undefined && res.status !== 204) {
-      throw new Error("La respuesta exitosa no contiene datos esperados.");
+    console.log("🌐 [Fetcher] Respuesta JSON parseada:", jsonResponse);
+
+    // Handle both response formats: wrapped in 'content' field or direct data
+    if (jsonResponse.content !== undefined) {
+      // Response is wrapped in content field (standard format)
+      return jsonResponse as Response<T>;
+    } else if (res.status !== 204) {
+      // Response is direct data, wrap it in the expected format
+      return {
+        content: jsonResponse as T,
+        status_code: res.status
+      } as Response<T>;
     }
 
-    return jsonResponse;
+    // For 204 No Content responses
+    return {
+      content: undefined as any,
+      status_code: res.status
+    } as Response<T>;
   };
 
   return fetcher;

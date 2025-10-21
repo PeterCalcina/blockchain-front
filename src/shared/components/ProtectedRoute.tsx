@@ -6,10 +6,10 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { token } = useAuthStore()
+  const { accessToken } = useAuthStore()
   const location = useLocation()
 
-  if (!token) {
+  if (!accessToken) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
