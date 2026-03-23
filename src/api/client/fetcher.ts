@@ -1,6 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
 import type { Response } from "@/shared/types/Response";
-import { createMockFetcher } from "./fetcher.mock";
 
 type SearchParams = Record<string, string | number | boolean | undefined>;
 
@@ -107,7 +106,7 @@ export const useAuthFetcher = () => {
   };
 
   // Wrap fetcher with mock interceptor
-  return createMockFetcher(baseFetcher);
+  return baseFetcher;
 };
 
 const toQueryString = (params: SearchParams) =>

@@ -16,7 +16,7 @@ export function RegisterPage() {
     last_name: "",
     second_last_name: "",
     phone: "",
-    user_type: "",
+    role: "",
     email: "",
     password: "",
   });
@@ -245,14 +245,14 @@ export function RegisterPage() {
                   Tipo de Usuario
                 </Label>
                 <Select.Root
-                  value={formData.user_type}
+                  value={formData.role}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, user_type: value })
+                    setFormData({ ...formData, role: value })
                   }
                 >
                   <Select.Trigger
                     className={`h-12 border-gray-200 bg-white focus:border-purple-500 focus:ring-purple-500/20 ${
-                      formData.user_type
+                      formData.role
                         ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                         : ""
                     }`}

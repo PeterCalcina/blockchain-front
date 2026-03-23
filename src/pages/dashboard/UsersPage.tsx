@@ -204,7 +204,7 @@ export default function UsersPage() {
                             className="focus:border-purple-500 focus:ring-purple-500/20"
                           />
                         </Table.Cell>
-                        <Table.Cell className="text-gray-600">{user.user_type}</Table.Cell>
+                        <Table.Cell className="text-gray-600">{user.role}</Table.Cell>
                         <Table.Cell>
                           <div className="flex justify-end gap-2">
                             <Button
@@ -237,7 +237,7 @@ export default function UsersPage() {
                         <Table.Cell className="text-gray-600">{user.phone}</Table.Cell>
                         <Table.Cell className="text-gray-600">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            {user.user_type}
+                            {user.role}
                           </span>
                         </Table.Cell>
                         <Table.Cell>

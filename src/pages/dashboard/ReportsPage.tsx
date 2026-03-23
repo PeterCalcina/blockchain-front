@@ -1,13 +1,7 @@
 import { useMemo } from "react";
 import { Card } from "@/shared/components/ui/card";
 import { Loader } from "@/shared/components/ui/loader";
-import {
-  TrendingUp,
-  TrendingDown,
-  FileText,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { FileText, CheckCircle, XCircle } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -22,36 +16,58 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useGetReports } from "@/api/hooks/useGetReports";
-import type { ReportsData } from "@/shared/types/Reports";
+import type { GetReportSchemaDto } from "@/shared/schemas/report.schema";
 
 /**
  * Reports Page - Dashboard with statistics and charts
  */
 export default function ReportsPage() {
   const { data: reportsData, isLoading } = useGetReports();
-
+  
   // Fallback data if needed
-  const data: ReportsData | undefined = reportsData;
+  const data: GetReportSchemaDto = reportsData || {
+    summary: {
+      total_documents: 0,
+      verified: 0,
+      failed: 0,
+    },
+    weekly: {
+      Lun: 0,
+      Mar: 0,
+      Mie: 0,
+      Jue: 0,
+      Vie: 0,
+      Sab: 0,
+      Dom: 0,
+    },
+    status: {
+      verified: 0,
+      failed: 0,
+    },
+  };
 
   const stats = useMemo(() => {
     if (!data) return [];
     return [
       {
-        ...data.stats.signedDocuments,
+        title: "Documentos Totales",
+        value: data.summary.total_documents,
         color: "from-blue-400 to-blue-600",
         bgColor: "bg-linear-to-br from-teal-500 to-(--navy-600)",
         textColor: "text-white",
         icon: FileText,
       },
       {
-        ...data.stats.userSignatures,
+        title: "Firmas Verificadas",
+        value: data.summary.verified,
         color: "from-emerald-400 to-emerald-600",
         bgColor: "bg-linear-to-br from-emerald-500 to-(--teal-600)",
         textColor: "text-white",
         icon: CheckCircle,
       },
       {
-        ...data.stats.dailySignatures,
+        title: "Firmas Fallidas",
+        value: data.summary.failed,
         color: "from-rose-400 to-rose-600",
         bgColor: "bg-linear-to-br from-rose-500 to-(--rose-600)",
         textColor: "text-white",
@@ -103,8 +119,6 @@ export default function ReportsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
-          const isPositive = stat.changeType === "increase";
-          const TrendIcon = isPositive ? TrendingUp : TrendingDown;
 
           return (
             <Card.Root
@@ -124,34 +138,13 @@ export default function ReportsPage() {
                       <span className="text-4xl font-bold text-foreground">
                         {stat.value}
                       </span>
-                      {stat.suffix && (
-                        <span className="text-xl font-semibold text-muted-foreground">
-                          {stat.suffix}
-                        </span>
-                      )}
                     </div>
                   </div>
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg shadow-md ${stat.bgColor}`}>
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-lg shadow-md ${stat.bgColor}`}
+                  >
                     <Icon className={`w-6 h-6 ${stat.textColor}`} />
                   </div>
-                </div>
-
-                {/* Change indicator */}
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="flex items-center gap-1">
-                    <TrendIcon
-                      className={`w-4 h-4 ${isPositive ? "text-emerald-600" : "text-rose-600"}`}
-                    />
-                    <span
-                      className={`text-sm font-semibold ${isPositive ? "text-emerald-600" : "text-rose-600"}`}
-                    >
-                      {isPositive ? "+" : ""}
-                      {stat.change}%
-                    </span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {stat.description}
-                  </span>
                 </div>
               </Card.Content>
             </Card.Root>
@@ -174,7 +167,10 @@ export default function ReportsPage() {
           <Card.Content className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={data.dailyStats}
+                data={Object.entries(data.weekly).map(([day, count]) => ({
+                  day,
+                  count,
+                }))}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -213,7 +209,13 @@ export default function ReportsPage() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={data.signatureStatus}
+                  data={[data.status.verified, data.status.failed].map(
+                    (value, index) => ({
+                      name: index === 0 ? "Verificadas" : "Fallidas",
+                      value,
+                      type: index === 0 ? "success" : "failed",
+                    }),
+                  )}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -223,16 +225,16 @@ export default function ReportsPage() {
                   dataKey="value"
                   animationDuration={500}
                 >
-                  {data.signatureStatus.map((entry) => (
-                    <Cell
-                      key={`cell-${entry.name}`}
-                      fill={
-                        entry.type === "success"
-                          ? chartColors.success
-                          : chartColors.failed
-                      }
-                    />
-                  ))}
+                  {[data.status.verified, data.status.failed].map(
+                    (_value, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          index === 0 ? chartColors.success : chartColors.failed
+                        }
+                      />
+                    ),
+                  )}
                 </Pie>
                 <Tooltip
                   contentStyle={{

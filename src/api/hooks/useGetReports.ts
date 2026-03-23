@@ -1,26 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthFetcher } from "@/api/client/fetcher";
-import type { ReportsData } from "@/shared/types/Reports";
+import { getReportService } from "../services/report.service";
 
-/**
- * Hook to fetch reports data
- */
 export const useGetReports = () => {
   const fetcher = useAuthFetcher();
+  const { getReport } = getReportService(fetcher);
 
   return useQuery({
     queryKey: ["reports"],
-    queryFn: async () => {
-      try {
-        const response = await fetcher<ReportsData>(
-          `${import.meta.env.VITE_API_URL}/reports`
-        );
-        return response.content;
-      } catch (error) {
-        console.error("Error fetching reports:", error);
-        throw error;
-      }
-    },
+    queryFn: async () => await getReport(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });
