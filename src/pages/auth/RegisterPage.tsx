@@ -6,7 +6,7 @@ import {
   type CreateUserSchemaDto,
 } from "@/shared/schemas/user.schema";
 import { useToastStore } from "@/stores/toastStore";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -21,6 +21,8 @@ export function RegisterPage() {
     password: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const createUser = useCreateUser();
   const navigate = useNavigate();
   const { addToast } = useToastStore();
@@ -55,10 +57,10 @@ export function RegisterPage() {
     <div className="p-6">
       <Card.Root className="w-full max-w-2xl mx-auto shadow-lg border-0 bg-white">
         <Card.Header className="text-center pb-8">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-600 shadow-lg">
             <UserPlus className="h-8 w-8 text-white" />
           </div>
-          <Card.Title className="text-3xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
+          <Card.Title className="text-3xl font-bold bg-linear-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
             BlockSign
           </Card.Title>
           <Card.Description className="text-gray-600 text-base">
@@ -157,39 +159,65 @@ export function RegisterPage() {
                 <Label className="text-purple-700 font-medium">
                   Contraseña
                 </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Crea una contraseña"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 ${
-                    formData.password
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                      : ""
-                  }`}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Crea una contraseña"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 pr-10 ${
+                      formData.password
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : ""
+                    }`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label className="text-purple-700 font-medium">
                   Confirmar Contraseña
                 </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirma tu contraseña"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 ${
-                    confirmPassword
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                      : ""
-                  }`}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirma tu contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 pr-10 ${
+                      confirmPassword
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : ""
+                    }`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -223,7 +251,7 @@ export function RegisterPage() {
                   }
                 >
                   <Select.Trigger
-                    className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 ${
+                    className={`h-12 border-gray-200 bg-white focus:border-purple-500 focus:ring-purple-500/20 ${
                       formData.user_type
                         ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                         : ""
@@ -231,7 +259,7 @@ export function RegisterPage() {
                   >
                     <Select.Value placeholder="Selecciona el tipo de usuario" />
                   </Select.Trigger>
-                  <Select.Content>
+                  <Select.Content className="bg-white">
                     <Select.Item value="admin">Administrador</Select.Item>
                     <Select.Item value="user">Usuario</Select.Item>
                     <Select.Item value="moderator">Moderador</Select.Item>
@@ -242,7 +270,7 @@ export function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+              className="w-full h-12 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
               disabled={createUser.isPending}
             >
               {createUser.isPending ? (

@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/authStore";
 import type { Response } from "@/shared/types/Response";
+import { createMockFetcher } from "./fetcher.mock";
 
 type SearchParams = Record<string, string | number | boolean | undefined>;
 
@@ -8,7 +9,7 @@ interface FetcherOptions extends RequestInit {
 }
 
 export const useAuthFetcher = () => {
-  const fetcher = async <T>(
+  const baseFetcher = async <T>(
     url: string,
     options: FetcherOptions = {}
   ): Promise<Response<T>> => {
@@ -105,7 +106,8 @@ export const useAuthFetcher = () => {
     } as Response<T>;
   };
 
-  return fetcher;
+  // Wrap fetcher with mock interceptor
+  return createMockFetcher(baseFetcher);
 };
 
 const toQueryString = (params: SearchParams) =>

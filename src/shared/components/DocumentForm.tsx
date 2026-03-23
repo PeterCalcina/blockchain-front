@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -24,6 +24,7 @@ interface DocumentFormProps {
   docNameValue?: string;
   onDocNameChange?: (value: string) => void;
   docNameError?: string;
+  resetKey?: number | string; // When this changes, the form will reset
 }
 
 export function DocumentForm({
@@ -39,10 +40,12 @@ export function DocumentForm({
   docNameValue = "",
   onDocNameChange,
   docNameError,
+  resetKey,
 }: DocumentFormProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const prevResetKeyRef = useRef(resetKey);
 
   const handleFileUpload = useCallback(async (file: File) => {
     if (file.type !== "application/pdf") {
@@ -99,6 +102,22 @@ export function DocumentForm({
     }
   };
 
+  // Reset form when resetKey changes (typically after successful submission)
+  useEffect(() => {
+    if (resetKey !== undefined && resetKey !== prevResetKeyRef.current && resetKey !== null) {
+      // Reset form when resetKey changes
+      setUploadedFile(null);
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+        setPdfUrl(null);
+      }
+      if (onDocNameChange) {
+        onDocNameChange("");
+      }
+      prevResetKeyRef.current = resetKey;
+    }
+  }, [resetKey, pdfUrl, onDocNameChange]);
+
   const handleSubmit = () => {
     if (uploadedFile) {
       onDocumentSubmit(uploadedFile, showDocNameInput ? docNameValue : undefined);
@@ -108,9 +127,9 @@ export function DocumentForm({
   const canSubmit = uploadedFile && (!showDocNameInput || docNameValue.trim());
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-teal-50/30">
+    <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-teal-50/30">
       <header className="flex items-center gap-2 px-6 py-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-[var(--navy-700)] to-teal-600 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold bg-linear-to-r from-(--navy-700) to-teal-600 bg-clip-text text-transparent">
           {title}
         </h1>
         <Sparkles className="h-5 w-5 text-amber-500 ml-2" />
@@ -120,9 +139,9 @@ export function DocumentForm({
         <div className="max-w-4xl mx-auto space-y-6">
           {!uploadedFile && (
             <Card.Root className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-              <Card.Header className="bg-gradient-to-r from-teal-50 to-[var(--navy-50)] rounded-t-lg">
-                <Card.Title className="flex items-center gap-3 text-[var(--navy-700)]">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500 to-[var(--navy-600)]">
+              <Card.Header className="bg-linear-to-r from-teal-50 to-(--navy-50) rounded-t-lg">
+                <Card.Title className="flex items-center gap-3 text-(--navy-700)">
+                  <div className="p-2 rounded-lg bg-linear-to-br from-teal-500 to-(--navy-600)">
                     <FileUp className="h-5 w-5 text-white" />
                   </div>
                   {title}
@@ -135,8 +154,8 @@ export function DocumentForm({
                 <div
                   className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
                     isDragOver
-                      ? "border-teal-400 bg-gradient-to-br from-teal-50 to-[var(--navy-50)] scale-[1.02]"
-                      : "border-gray-300 hover:border-teal-300 hover:bg-gradient-to-br hover:from-teal-50/50 hover:to-[var(--navy-50)]/50"
+                      ? "border-teal-400 bg-linear-to-br from-teal-50 to-(--navy-50) scale-[1.02]"
+                      : "border-gray-300 hover:border-teal-300 hover:bg-linear-to-br hover:from-teal-50/50 hover:to-(--navy-50)/50"
                   }`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
@@ -145,12 +164,12 @@ export function DocumentForm({
                   <div className="space-y-6">
                     <div className="relative">
                       <Upload className="h-16 w-16 text-gray-400 mx-auto" />
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-linear-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
                         <Sparkles className="h-3 w-3 text-white" />
                       </div>
                     </div>
                     <div>
-                      <p className="text-xl font-semibold text-[var(--navy-700)] mb-2">
+                      <p className="text-xl font-semibold text-(--navy-700) mb-2">
                         Haz clic aquí para subir tu documento
                       </p>
                       <p className="text-gray-600">
@@ -166,7 +185,7 @@ export function DocumentForm({
                     />
                     <Button
                       asChild
-                      className="bg-gradient-to-r from-teal-600 to-[var(--navy-600)] hover:from-teal-700 hover:to-[var(--navy-700)] text-white font-medium px-8 py-3 shadow-lg transition-all duration-200 transform hover:scale-105"
+                      className="bg-linear-to-r from-teal-600 to-(--navy-600) hover:from-teal-700 hover:to-(--navy-700) text-white font-medium px-8 py-3 shadow-lg transition-all duration-200 transform hover:scale-105"
                     >
                       <label htmlFor="file-upload" className="cursor-pointer">
                         Seleccionar Archivo
@@ -180,10 +199,10 @@ export function DocumentForm({
 
           {uploadedFile && (
             <Card.Root className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-              <Card.Header className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-t-lg">
+              <Card.Header className="bg-linear-to-r from-emerald-50 to-teal-50 rounded-t-lg">
                 <Card.Title className="flex items-center justify-between">
-                  <span className="flex items-center gap-3 text-[var(--navy-700)]">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+                  <span className="flex items-center gap-3 text-(--navy-700)">
+                    <div className="p-2 rounded-lg bg-linear-to-br from-emerald-500 to-teal-600">
                       <FileText className="h-5 w-5 text-white" />
                     </div>
                     Documento Cargado
@@ -200,12 +219,12 @@ export function DocumentForm({
               </Card.Header>
               <Card.Content className="p-6">
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-teal-50 rounded-xl border border-gray-200">
-                    <div className="p-3 rounded-lg bg-gradient-to-br from-rose-500 to-rose-600 shadow-md">
+                  <div className="flex items-center gap-4 p-4 bg-linear-to-r from-gray-50 to-teal-50 rounded-xl border border-gray-200">
+                    <div className="p-3 rounded-lg bg-linear-to-br from-rose-500 to-rose-600 shadow-md">
                       <FileText className="h-8 w-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="font-semibold text-[var(--navy-700)] text-lg">
+                      <p className="font-semibold text-(--navy-700) text-lg">
                         {uploadedFile.name}
                       </p>
                       <p className="text-gray-600">
@@ -223,7 +242,7 @@ export function DocumentForm({
                   {pdfUrl && (
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-xl overflow-hidden shadow-lg">
-                        <div className="bg-gradient-to-r from-[var(--navy-600)] to-teal-600 px-6 py-3 border-b">
+                        <div className="bg-linear-to-r from-(--navy-600) to-teal-600 px-6 py-3 border-b">
                           <p className="text-sm font-semibold text-white">
                             Vista previa - Primera página
                           </p>
@@ -238,11 +257,11 @@ export function DocumentForm({
                       </div>
 
                       {showDocNameInput && (
-                        <div className="bg-gradient-to-r from-[var(--navy-50)] to-teal-50 p-6 rounded-xl border border-gray-200">
+                        <div className="bg-linear-to-r from-(--navy-50) to-teal-50 p-6 rounded-xl border border-gray-200">
                           <div className="space-y-3">
                             <label
                               htmlFor="docName"
-                              className="block text-sm font-semibold text-[var(--navy-700)]"
+                              className="block text-sm font-semibold text-(--navy-700)"
                             >
                               {docNameLabel}
                             </label>
@@ -252,7 +271,7 @@ export function DocumentForm({
                               placeholder={docNamePlaceholder}
                               value={docNameValue}
                               onChange={(e) => onDocNameChange?.(e.target.value)}
-                              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white text-[var(--navy-700)] placeholder-gray-400 transition-colors duration-200 ${
+                              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white text-(--navy-700) placeholder-gray-400 transition-colors duration-200 ${
                                 docNameError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-gray-300"
                               }`}
                             />
@@ -271,7 +290,7 @@ export function DocumentForm({
 
                       <div className="flex justify-center pt-2">
                         <Button
-                          className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold px-8 py-4 text-lg shadow-xl transition-all duration-200 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          className="bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold px-8 py-4 text-lg shadow-xl transition-all duration-200 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                           disabled={!canSubmit || isLoading}
                           onClick={handleSubmit}
                         >

@@ -1,4 +1,4 @@
-import type { CreateUserSchemaDto, GetUserSchemaDto } from "@/shared/schemas/user.schema";
+import type { CreateUserSchemaDto, GetUserSchemaDto, UpdateUserSchema } from "@/shared/schemas/user.schema";
 import { API_ENDPOINTS } from "../endpoints";
 import type { useAuthFetcher } from "../client/fetcher";
 
@@ -19,4 +19,23 @@ export const listUsersService = (
     fetcher<GetUserSchemaDto[]>(API_ENDPOINTS.auth.listUsers, {
       method: "GET",
     }).then(response => response.content),
+});
+
+export const updateUserService = (
+  fetcher: ReturnType<typeof useAuthFetcher>
+) => ({
+  update: (id: string, user: UpdateUserSchema) =>
+    fetcher<GetUserSchemaDto>(API_ENDPOINTS.auth.updateUser(id), {
+      method: "PUT",
+      body: JSON.stringify(user),
+    }),
+});
+
+export const deleteUserService = (
+  fetcher: ReturnType<typeof useAuthFetcher>
+) => ({
+  delete: (id: string) =>
+    fetcher<void>(API_ENDPOINTS.auth.deleteUser(id), {
+      method: "DELETE",
+    }),
 });

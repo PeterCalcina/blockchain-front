@@ -12,4 +12,29 @@
   --navy-700: #4338ca;
   --navy-800: #3730a3;
   --navy-900: #312e81;
+
+  --teal: #14b8a6;
+  --teal-50: #ccfbf1;
+  --teal-100: #99f6e4;
+  --teal-200: #5eead4;  
+  --teal-300: #2dd4bf;
+  --teal-400: #14b8a6;
+  --teal-500: #0d9488;
+  --teal-600: #0f766e;
+  --teal-700: #115e59;
+  --teal-800: #134e4a;
+  --teal-900: #164e63;
+
+  --rose: #f43f5e;
+  --rose-50: #fff1f2;
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+  --rose-600: #e11d48;
+  --rose-700: #be123c;
+  --rose-800: #9f1239;
+  --rose-900: #881337;
 }
+

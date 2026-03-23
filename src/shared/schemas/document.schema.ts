@@ -10,10 +10,12 @@ export type CreateDocumentSchemaDto = z.infer<typeof DocumentSchema>;
 export const GetDocumentHistorySchema = z.object({
   id: z.string(),
   doc_name: z.string(),
-  signed_at: z.string(),
-  file_hash: z.string(),
-  blockchain_hash: z.string(),
-  signed_by: z.string(),
+  verification_url: z.string(),
+  created_at: z.string(),
+  state: z.number(),
+  person_name: z.string(),
+  person_last_name: z.string(),
+  person_second_last_name: z.string(),
+  person_email: z.string(),
 });
 export type GetDocumentHistorySchemaDto = z.infer<typeof GetDocumentHistorySchema>;
-

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FileUp, BarChart3, LogOut, Shield, UserPlus, History } from "lucide-react";
+import { FileUp, BarChart3, LogOut, Shield, UserPlus, History, CheckCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +22,11 @@ const menuItems = [
     icon: FileUp,
   },
   {
+    title: "Validar Documento",
+    url: "/dashboard/validate-document",
+    icon: CheckCircle,
+  },
+  {
     title: "Crear Usuario",
     url: "/dashboard/register",
     icon: UserPlus,
@@ -32,8 +37,13 @@ const menuItems = [
     icon: History,
   },
   {
+    title: "Usuarios",
+    url: "/dashboard/users",
+    icon: Shield,
+  },
+  {
     title: "Reportes",
-    url: "/dashboard/reportes",
+    url: "/dashboard/reports",
     icon: BarChart3,
   },
 ];
@@ -49,14 +59,14 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-gray-200">
-      <SidebarHeader className="border-b border-gray-200 bg-gradient-to-r from-teal-50 to-[var(--navy-50)]">
+    <Sidebar className="border-r border-gray-200 sticky top-0 h-screen w-64 bg-white">
+      <SidebarHeader className="border-b border-gray-200 bg-linear-to-r from-teal-50 to-(--navy-50)">
         <div className="flex items-center gap-3 px-3 py-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-[var(--navy-600)] shadow-md">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-teal-500 to-(--navy-600) shadow-md">
             <Shield className="h-5 w-5 text-white" />
           </div>
           <div>
-            <p className="text-base font-bold bg-gradient-to-r from-[var(--navy-700)] to-[var(--navy-600)] bg-clip-text text-transparent">
+            <p className="text-base font-bold bg-linear-to-r from-(--navy-700) to-(--navy-600) bg-clip-text text-transparent">
               BlockSign
             </p>
             <p className="text-xs text-gray-600">Firma Digital Blockchain</p>
@@ -66,7 +76,7 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-white">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[var(--navy-700)] font-semibold">
+          <SidebarGroupLabel className="text-(--navy-700) font-semibold">
             Navegación
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -77,11 +87,10 @@ export function AppSidebar() {
                     asChild
                     isActive={pathname === item.url}
                     className={`
-                      transition-all duration-200 hover:bg-gradient-to-r hover:from-teal-50 hover:to-[var(--navy-50)]
-                      ${
+                      transition-all duration-200 hover:bg-linear-to-r hover:from-teal-50 hover:to-(--navy-50)]                      ${
                         pathname === item.url
-                          ? "bg-gradient-to-r from-teal-100 to-[var(--navy-100)] text-[var(--navy-700)] border-r-2 border-teal-500"
-                          : "text-gray-700 hover:text-[var(--navy-700)]"
+                          ? "bg-linear-to-r from-teal-100 to-(--navy-100) text-(--navy-700) border-r-2 border-teal-500"
+                          : "text-gray-700 hover:text-(--navy-700)"
                       }
                     `}
                   >

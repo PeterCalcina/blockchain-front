@@ -13,11 +13,10 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      console.log("🔐 [useLogin] Enviando credenciales:", credentials);
       const response = await login(credentials);
-      console.log("🔐 [useLogin] Respuesta completa del backend:", response);
-      console.log("🔐 [useLogin] Content de la respuesta:", response.content);
       
+      console.log("🔐 [useLogin] Respuesta completa del backend:", response);
+
       if (!response.content) {
         throw new Error("No se recibieron datos del usuario");
       }
@@ -25,18 +24,13 @@ export const useLogin = () => {
     },
 
     onSuccess: (responseData: { access_token: string; refresh_token: string; user_id: string }) => {
-      console.log("🔐 [useLogin] Datos procesados en onSuccess:", responseData);
-      
       const user: any = {
         id: responseData.user_id,
       };
-      
-      console.log("🔐 [useLogin] Usuario creado para setAuth:", user);
       setAuth(user, responseData.access_token);
       addToast("success", "¡Bienvenido! Has iniciado sesión correctamente.");
     },
     onError: (error) => {
-      console.error("🔐 [useLogin] Error en el login:", error);
       const message = error instanceof Error ? error.message : "Error al iniciar sesión";
       addToast("error", message);
     },

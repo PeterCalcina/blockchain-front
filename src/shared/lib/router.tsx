@@ -4,8 +4,12 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/pages/auth/ResetPassword";
 import SignDocument from "@/pages/dashboard/SignDocument";
 import HistoryPage from "@/pages/dashboard/HistoryPage";
+import UsersPage from "@/pages/dashboard/UsersPage";
+import ReportsPage from "@/pages/dashboard/ReportsPage";
+import SignValidation from "@/pages/validation/SignValidation";
 
 // Stores and Layouts
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -36,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: "/forgot-password",
             element: <ForgotPasswordPage />,
+          },
+          {
+            path: "/reset-password/:token",
+            element: <ResetPasswordPage />,
           }
         ],
       },
@@ -61,8 +69,16 @@ export const router = createBrowserRouter([
             element: <HistoryPage />,
           },
           {
+            path: "users",
+            element: <UsersPage />,
+          },
+          {
             path: "reports",
-            // element: <Reports />,
+            element: <ReportsPage />,
+          },
+          {
+            path: "validate-document",
+            element: <SignValidation />,
           },
         ],
       },

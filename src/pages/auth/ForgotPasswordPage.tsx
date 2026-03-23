@@ -31,10 +31,10 @@ export function ForgotPasswordPage() {
       <div className="min-h-screen flex items-center justify-center gradient-bg px-4">
         <Card.Root className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
           <Card.Header className="text-center pb-8">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-teal-600 shadow-lg">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-green-500 to-teal-600 shadow-lg">
               <KeyRound className="h-8 w-8 text-white" />
             </div>
-            <Card.Title className="text-3xl font-bold bg-gradient-to-r from-green-700 to-teal-600 bg-clip-text text-transparent">
+            <Card.Title className="text-3xl font-bold bg-linear-to-r from-green-700 to-teal-600 bg-clip-text text-transparent">
               ¡Enviado!
             </Card.Title>
             <Card.Description className="text-gray-600 text-base">
@@ -49,7 +49,7 @@ export function ForgotPasswordPage() {
               <div className="flex flex-col gap-3">
                 <Button
                   onClick={() => navigate("/login")}
-                  className="w-full h-12 bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+                  className="w-full h-12 bg-linear-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
                 >
                   Volver al Login
                 </Button>
@@ -75,10 +75,10 @@ export function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center gradient-bg px-4">
       <Card.Root className="w-full max-w-md shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
         <Card.Header className="text-center pb-8">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-red-600 shadow-lg">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-orange-500 to-red-600 shadow-lg">
             <KeyRound className="h-8 w-8 text-white" />
           </div>
-          <Card.Title className="text-3xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent">
+          <Card.Title className="text-3xl font-bold bg-linear-to-r from-orange-700 to-red-600 bg-clip-text text-transparent">
             Recuperar Contraseña
           </Card.Title>
           <Card.Description className="text-gray-600 text-base">
@@ -104,7 +104,7 @@ export function ForgotPasswordPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+              className="w-full h-12 bg-linear-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
               disabled={forgotPasswordMutation.isPending}
             >
               {forgotPasswordMutation.isPending ? (

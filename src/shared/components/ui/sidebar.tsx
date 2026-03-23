@@ -115,8 +115,9 @@ const SidebarProvider = React.forwardRef<
             }
             className={cn(
               "group/sidebar-wrapper grid min-h-svh has-[[data-variant=inset]]:bg-sidebar",
-              "grid-cols-[var(--sidebar-width)_1fr] transition-[grid-template-columns] duration-200 ease-in-out",
-              "group-data-[state=collapsed]:grid-cols-[var(--sidebar-width-icon)_1fr]",
+              "grid-cols-[1fr] transition-[grid-template-columns] duration-200 ease-in-out",
+              "md:grid-cols-[var(--sidebar-width)_1fr]",
+              "md:group-data-[state=collapsed]:grid-cols-[var(--sidebar-width-icon)_1fr]",
               className
             )}
             ref={ref}

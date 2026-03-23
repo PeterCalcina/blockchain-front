@@ -5,7 +5,10 @@ export const API_ENDPOINTS = {
     login: `${BASE_URL}/auth/login`,
     createUser: `${BASE_URL}/person/register`,
     listUsers: `${BASE_URL}/person/list`,
+    updateUser: (id: string) => `${BASE_URL}/person/${id}`,
+    deleteUser: (id: string) => `${BASE_URL}/person/${id}`,
     forgotPassword: `${BASE_URL}/auth/forgot-password`,
+    resetPassword: `${BASE_URL}/auth/reset-password`,
   },
   documents: {
     signDocument: `${BASE_URL}/document/sign`,

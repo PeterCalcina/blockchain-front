@@ -7,6 +7,7 @@ import { Shield } from "lucide-react";
 export default function SignDocument() {
   const [docName, setDocName] = useState("");
   const [docNameError, setDocNameError] = useState("");
+  const [resetKey, setResetKey] = useState(0);
 
   const { signDocument } = useSignDocument();
 
@@ -27,6 +28,8 @@ export default function SignDocument() {
       // Reset form after successful signing
       setDocName("");
       setDocNameError("");
+      // Trigger form reset by changing resetKey
+      setResetKey((prev) => prev + 1);
     } catch (error) {
       console.error("Error signing document:", error);
     }
@@ -46,6 +49,7 @@ export default function SignDocument() {
       docNameValue={docName}
       onDocNameChange={setDocName}
       docNameError={docNameError}
+      resetKey={resetKey}
     />
   );
 }
