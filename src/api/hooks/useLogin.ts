@@ -23,9 +23,10 @@ export const useLogin = () => {
       return response.content;
     },
 
-    onSuccess: (responseData: { access_token: string; refresh_token: string; user_id: string }) => {
+    onSuccess: (responseData: { access_token: string; refresh_token: string; user_id: string, role: string }) => {
       const user: any = {
         id: responseData.user_id,
+        role: responseData.role,  
       };
       setAuth(user, responseData.access_token);
       addToast("success", "¡Bienvenido! Has iniciado sesión correctamente.");

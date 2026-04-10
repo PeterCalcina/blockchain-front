@@ -9,8 +9,15 @@ export const getReportService = (
     fetcher<GetReportSchemaDto>(API_ENDPOINTS.report.getReport, {
       method: "GET",
     }).then(response => response.content),
-  getPdf: () =>
-    fetcher<Blob>(API_ENDPOINTS.report.pdf, {
+  getPdf: async () => {
+    const token = localStorage.getItem("accessToken");
+    const response = await fetch(API_ENDPOINTS.report.pdf, {
       method: "GET",
-    }).then(response => response),
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    return response;
+  }
 });

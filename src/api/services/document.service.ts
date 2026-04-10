@@ -24,7 +24,6 @@ export const createDocumentService = (
 
     const response = await fetch(API_ENDPOINTS.documents.signDocument, {
       method: "POST",
-      body: formData,
       headers: {
         "Authorization": `Bearer ${accessToken}`,
       },

@@ -17,13 +17,16 @@ import {
 } from "recharts";
 import { useGetReports } from "@/api/hooks/useGetReports";
 import type { GetReportSchemaDto } from "@/shared/schemas/report.schema";
+import { useDownloadReport } from "@/api/hooks/useDownloadReport";
+import { Button } from "@/shared/components/ui";
 
 /**
  * Reports Page - Dashboard with statistics and charts
  */
 export default function ReportsPage() {
   const { data: reportsData, isLoading } = useGetReports();
-  
+  const { downloadReport } = useDownloadReport();
+
   // Fallback data if needed
   const data: GetReportSchemaDto = reportsData || {
     summary: {
@@ -113,6 +116,16 @@ export default function ReportsPage() {
           </p>
         </div>
         <div className="text-3xl">✨</div>
+      </div>
+
+      <div>
+        <Button
+          variant="outline"
+          onClick={() => downloadReport.mutate()}
+          disabled={downloadReport.isPending}
+        >
+          Descargar Reporte PDF
+        </Button>
       </div>
 
       {/* Stats Cards */}
