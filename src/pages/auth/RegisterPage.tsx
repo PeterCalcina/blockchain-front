@@ -5,8 +5,7 @@ import {
   CreateUserSchema,
   type CreateUserSchemaDto,
 } from "@/shared/schemas/user.schema";
-import { useToastStore } from "@/stores/toastStore";
-import { UserPlus, Eye, EyeOff } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -18,23 +17,12 @@ export function RegisterPage() {
     phone: "",
     role: "",
     email: "",
-    password: "",
   });
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const createUser = useCreateUser();
   const navigate = useNavigate();
-  const { addToast } = useToastStore();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validar que las contraseñas coincidan
-    if (formData.password !== confirmPassword) {
-      addToast("error", "Las contraseñas no coinciden");
-      return;
-    }
 
     try {
       const validateData = CreateUserSchema.parse(formData);
@@ -152,73 +140,6 @@ export function RegisterPage() {
                 }`}
                 required
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-purple-700 font-medium">
-                  Contraseña
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Crea una contraseña"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 pr-10 ${
-                      formData.password
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        : ""
-                    }`}
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-purple-700 font-medium">
-                  Confirmar Contraseña
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirma tu contraseña"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className={`h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 pr-10 ${
-                      confirmPassword
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        : ""
-                    }`}
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

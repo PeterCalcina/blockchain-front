@@ -2,7 +2,6 @@ import * as z from "zod";
 
 const BaseUserSchema = z.object({
   email: z.email("El correo electrónico no es válido"),
-  password: z.string().min(1, "La contraseña es requerida"),
   name: z.string().min(1, "El nombre es requerido"),
   last_name: z.string().min(1, "El apellido es requerido"),
   second_last_name: z.string().min(1, "El segundo apellido es requerido"),
@@ -16,7 +15,7 @@ export type CreateUserSchemaDto = z.infer<typeof CreateUserSchema>;
 export const UpdateUserSchema = BaseUserSchema.partial();
 export type UpdateUserSchema = z.infer<typeof UpdateUserSchema>;
 
-export const GetUserSchema = BaseUserSchema.omit({ password: true }).extend({
+export const GetUserSchema = BaseUserSchema.extend({
   id: z.string().min(1, "El ID es requerido"),
 });
 export type GetUserSchemaDto = z.infer<typeof GetUserSchema>;

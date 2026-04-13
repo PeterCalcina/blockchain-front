@@ -38,7 +38,7 @@ export const createDocumentService = (
     // Crear blob y descargar el PDF
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-    
+
     const a = document.createElement("a");
     a.href = url;
     a.download = `${documentToSign.doc_name}_firmado.pdf`;
@@ -65,6 +65,12 @@ export const createDocumentService = (
       body: formData,
     });
   },
+  validateByCsv: (csvCode: string) => {
+    return fetcher(API_ENDPOINTS.documents.verifyByCsv, {
+      method: "GET",
+      params: { csv_code: csvCode }
+    }).then((response) => response.content);
+  }
 });
 
 export const getDocumentHistoryService = (

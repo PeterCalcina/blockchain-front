@@ -10,6 +10,7 @@ import {
   Sparkles,
   AlertCircle,
 } from "lucide-react";
+import { useValidateByCsv } from "@/api/hooks/useValidateByCsv";
 
 interface DocumentFormProps {
   title: string;
@@ -45,21 +46,26 @@ export function DocumentForm({
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [csvCode, setCsvCode] = useState("");
   const prevResetKeyRef = useRef(resetKey);
+  const validateByCsvMutation = useValidateByCsv();
 
-  const handleFileUpload = useCallback(async (file: File) => {
-    if (file.type !== "application/pdf") {
-      return;
-    }
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      if (file.type !== "application/pdf") {
+        return;
+      }
 
-    const url = URL.createObjectURL(file);
-    setUploadedFile(file);
-    setPdfUrl(url);
-    
-    if (onDocNameChange) {
-      onDocNameChange(file.name.replace('.pdf', ''));
-    }
-  }, [onDocNameChange]);
+      const url = URL.createObjectURL(file);
+      setUploadedFile(file);
+      setPdfUrl(url);
+
+      if (onDocNameChange) {
+        onDocNameChange(file.name.replace(".pdf", ""));
+      }
+    },
+    [onDocNameChange],
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -71,7 +77,7 @@ export function DocumentForm({
         handleFileUpload(files[0]);
       }
     },
-    [handleFileUpload]
+    [handleFileUpload],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -104,7 +110,11 @@ export function DocumentForm({
 
   // Reset form when resetKey changes (typically after successful submission)
   useEffect(() => {
-    if (resetKey !== undefined && resetKey !== prevResetKeyRef.current && resetKey !== null) {
+    if (
+      resetKey !== undefined &&
+      resetKey !== prevResetKeyRef.current &&
+      resetKey !== null
+    ) {
       // Reset form when resetKey changes
       setUploadedFile(null);
       if (pdfUrl) {
@@ -114,17 +124,22 @@ export function DocumentForm({
       if (onDocNameChange) {
         onDocNameChange("");
       }
+      setCsvCode("");
       prevResetKeyRef.current = resetKey;
     }
   }, [resetKey, pdfUrl, onDocNameChange]);
 
   const handleSubmit = () => {
     if (uploadedFile) {
-      onDocumentSubmit(uploadedFile, showDocNameInput ? docNameValue : undefined);
+      onDocumentSubmit(
+        uploadedFile,
+        showDocNameInput ? docNameValue : undefined,
+      );
     }
   };
 
   const canSubmit = uploadedFile && (!showDocNameInput || docNameValue.trim());
+  const showCSVInput = title === "Validar Documento";
 
   return (
     <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-teal-50/30">
@@ -151,6 +166,46 @@ export function DocumentForm({
                 </Card.Description>
               </Card.Header>
               <Card.Content className="p-8">
+                {showCSVInput && (
+                  <div className="bg-linear-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-gray-200">
+                    <div className="space-y-3">
+                      <label
+                        htmlFor="csvCode"
+                        className="block text-sm font-semibold text-(--navy-700)"
+                      >
+                        Código CSV de Validación
+                      </label>
+                      <input
+                        id="csvCode"
+                        type="text"
+                        placeholder="Ingresa el código CSV"
+                        value={csvCode}
+                        onChange={(e) => setCsvCode(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-(--navy-700) placeholder-gray-400 transition-colors duration-200"
+                      />
+                      <p className="text-xs text-gray-600">
+                        Ingresa el código CSV para validar el documento en la
+                        blockchain
+                      </p>
+                      <Button
+                        onClick={() => validateByCsvMutation.mutate(csvCode)}
+                        disabled={
+                          !csvCode.trim() || validateByCsvMutation.isPending
+                        }
+                        className="bg-linear-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-medium px-6 py-2 shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                      >
+                        {validateByCsvMutation.isPending ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            Validando...
+                          </div>
+                        ) : (
+                          "Validar por CSV"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 <div
                   className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
                     isDragOver
@@ -270,9 +325,13 @@ export function DocumentForm({
                               type="text"
                               placeholder={docNamePlaceholder}
                               value={docNameValue}
-                              onChange={(e) => onDocNameChange?.(e.target.value)}
+                              onChange={(e) =>
+                                onDocNameChange?.(e.target.value)
+                              }
                               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white text-(--navy-700) placeholder-gray-400 transition-colors duration-200 ${
-                                docNameError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-gray-300"
+                                docNameError
+                                  ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                  : "border-gray-300"
                               }`}
                             />
                             {docNameError && (
@@ -282,7 +341,8 @@ export function DocumentForm({
                               </p>
                             )}
                             <p className="text-xs text-gray-600">
-                              Este nombre se utilizará para identificar el documento en la blockchain
+                              Este nombre se utilizará para identificar el
+                              documento en la blockchain
                             </p>
                           </div>
                         </div>

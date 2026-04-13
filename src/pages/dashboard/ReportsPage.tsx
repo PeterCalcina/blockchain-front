@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@/shared/components/ui/card";
 import { Loader } from "@/shared/components/ui/loader";
 import { FileText, CheckCircle, XCircle } from "lucide-react";
@@ -19,6 +19,12 @@ import { useGetReports } from "@/api/hooks/useGetReports";
 import type { GetReportSchemaDto } from "@/shared/schemas/report.schema";
 import { useDownloadReport } from "@/api/hooks/useDownloadReport";
 import { Button } from "@/shared/components/ui";
+import { useGetDashboardData } from "@/api/hooks/useGetDashboardData";
+import type { GetDashboardDataSchemaDto } from "@/shared/schemas/report.schema";
+import { Table } from "@/shared/components/ui/table";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { Select } from "@/shared/components/ui/select";
 
 /**
  * Reports Page - Dashboard with statistics and charts
@@ -26,6 +32,23 @@ import { Button } from "@/shared/components/ui";
 export default function ReportsPage() {
   const { data: reportsData, isLoading } = useGetReports();
   const { downloadReport } = useDownloadReport();
+
+  // Default dates for current month
+  const currentDate = new Date();
+  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+  const [startDate, setStartDate] = useState(firstDay.toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(lastDay.toISOString().split('T')[0]);
+  const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
+
+  const { data: dashboardData, isLoading: isDashboardLoading } = useGetDashboardData(
+    startDate,
+    endDate,
+    status,
+    search
+  );
 
   // Fallback data if needed
   const data: GetReportSchemaDto = reportsData || {
@@ -263,6 +286,124 @@ export default function ReportsPage() {
           </Card.Content>
         </Card.Root>
       </div>
+
+      {/* Dashboard Data Table */}
+      <Card.Root className="overflow-hidden border-0 shadow-lg">
+        <Card.Header className="bg-linear-to-r from-teal-300/50 to-(--navy-400)/50">
+          <Card.Title className="text-lg">
+            Datos del Dashboard
+          </Card.Title>
+          <Card.Description>
+            Lista detallada de documentos con filtros aplicados
+          </Card.Description>
+        </Card.Header>
+        <Card.Content className="p-6">
+          {/* Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div>
+              <Label htmlFor="startDate">Fecha Inicio</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="endDate">Fecha Fin</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="status">Estado</Label>
+              <Select.Root value={status} onValueChange={setStatus}>
+                <Select.Trigger>
+                  <Select.Value placeholder="Todos los estados" />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Item value="">Todos</Select.Item>
+                  <Select.Item value="verified">Verificado</Select.Item>
+                  <Select.Item value="failed">Fallido</Select.Item>
+                  <Select.Item value="pending">Pendiente</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </div>
+            <div>
+              <Label htmlFor="search">Buscar</Label>
+              <Input
+                id="search"
+                type="text"
+                placeholder="Nombre del documento..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Table */}
+          {isDashboardLoading ? (
+            <div className="flex items-center justify-center h-32">
+              <Loader />
+            </div>
+          ) : dashboardData && dashboardData.length > 0 ? (
+            <div className="overflow-x-auto">
+              <Table.Root>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head>ID</Table.Head>
+                    <Table.Head>Nombre del Documento</Table.Head>
+                    <Table.Head>Fecha de Creación</Table.Head>
+                    <Table.Head>Hash del Documento</Table.Head>
+                    <Table.Head>Propietario</Table.Head>
+                    <Table.Head>Código CSV</Table.Head>
+                    <Table.Head>Estado</Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {dashboardData.map((item: GetDashboardDataSchemaDto) => (
+                    <Table.Row key={item.id}>
+                      <Table.Cell className="font-mono text-sm">{item.id}</Table.Cell>
+                      <Table.Cell>{item.doc_name}</Table.Cell>
+                      <Table.Cell>
+                        {new Date(item.created_at).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </Table.Cell>
+                      <Table.Cell className="font-mono text-sm break-all">{item.doc_hash}</Table.Cell>
+                      <Table.Cell>{item.owner_name}</Table.Cell>
+                      <Table.Cell className="font-mono text-sm">{item.csv_code}</Table.Cell>
+                      <Table.Cell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          item.status === 'verified'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : item.status === 'failed'
+                            ? 'bg-rose-100 text-rose-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {item.status === 'verified' ? 'Verificado' :
+                           item.status === 'failed' ? 'Fallido' : 'Pendiente'}
+                        </span>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Root>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              No se encontraron datos para los filtros aplicados
+            </div>
+          )}
+        </Card.Content>
+      </Card.Root>
     </div>
   );
 }

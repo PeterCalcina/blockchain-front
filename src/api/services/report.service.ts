@@ -1,6 +1,6 @@
 import { API_ENDPOINTS } from "../endpoints";
 import type { useAuthFetcher } from "../client/fetcher";
-import type { GetReportSchemaDto } from "@/shared/schemas/report.schema";
+import type { GetReportSchemaDto, GetDashboardDataSchemaDto } from "@/shared/schemas/report.schema";
 
 export const getReportService = (
   fetcher: ReturnType<typeof useAuthFetcher>
@@ -19,5 +19,15 @@ export const getReportService = (
     });
 
     return response;
-  }
+  },
+  getDashboardData: async (startDate: string, endDate: string, status: string, search: string) =>
+    fetcher<GetDashboardDataSchemaDto[]>(API_ENDPOINTS.report.dashboardData, {
+      method: "GET",
+      params: {
+        start_date: startDate,
+        end_date: endDate,
+        status: status,
+        search: search
+      },
+    }).then(response => response.content),
 });

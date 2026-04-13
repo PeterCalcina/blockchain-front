@@ -30,3 +30,15 @@ const BaseReportSchema = z.object({
 export const GetReportSchema = BaseReportSchema;
 
 export type GetReportSchemaDto = z.infer<typeof GetReportSchema>;
+
+export const GetDashboardDataSchema = z.object({
+  id: z.string(),
+  doc_name: z.string(),
+  created_at: z.date(),
+  doc_hash: z.string(),
+  owner_name: z.string(),
+  csv_code: z.string(),
+  status: z.string(),
+});
+
+export type GetDashboardDataSchemaDto = z.infer<typeof GetDashboardDataSchema>;

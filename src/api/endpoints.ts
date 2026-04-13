@@ -14,9 +14,11 @@ export const API_ENDPOINTS = {
     signDocument: `${BASE_URL}/document/sign`,
     getHistory: `${BASE_URL}/document/record`,
     validateDocument: `${BASE_URL}/document/validate`,
+    verifyByCsv: `${BASE_URL}/document/verify-by-csv`,
   },
   report: {
     getReport: `${BASE_URL}/report/dashboard`,
     pdf: `${BASE_URL}/report/report-pdf`,
+    dashboardData: `${BASE_URL}/report/dashboard-data`,
   }
 }
